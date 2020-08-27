@@ -11,6 +11,8 @@ abstract class Vendedor {
   // Como no vamos a implementarlo acá, es necesario explicitar qué devuelve.
   abstract fun puedeTrabajarEn(ciudad: Ciudad): Boolean
 
+  abstract fun esInfluyente(): Boolean
+
   // En las funciones declaradas con = no es necesario explicitar el tipo
   fun esVersatil() =
     certificaciones.size >= 3
@@ -35,6 +37,10 @@ class VendedorFijo(val ciudadOrigen: Ciudad) : Vendedor() {
   override fun puedeTrabajarEn(ciudad: Ciudad): Boolean {
     return ciudad == ciudadOrigen
   }
+
+  override fun esInfluyente(): Boolean {
+    return false
+  }
 }
 
 // A este tipo de List no se le pueden agregar elementos una vez definida
@@ -42,10 +48,18 @@ class Viajante(val provinciasHabilitadas: List<Provincia>) : Vendedor() {
   override fun puedeTrabajarEn(ciudad: Ciudad): Boolean {
     return provinciasHabilitadas.contains(ciudad.provincia)
   }
+
+  override fun esInfluyente(): Boolean {
+    return provinciasHabilitadas.sumBy {p => p.poblacion()} >= 10000000
+  }
 }
 
 class ComercioCorresponsal(val ciudades: List<Ciudad>) : Vendedor() {
   override fun puedeTrabajarEn(ciudad: Ciudad): Boolean {
     return ciudades.contains(ciudad)
+  }
+
+  override fun esInfluyente(): Boolean {
+    return ciudades.size >= 5
   }
 }
